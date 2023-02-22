@@ -1,0 +1,8 @@
+prefix=/home/woojin/dynamixel_current/dynamixel_current/install
+
+Name: dynamixel_mx_controller
+Description: Description of dynamixel_mx_controller
+Version: 0.0.0
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib -ldynamixel_current
+Requires: dynamixel_sdk roscpp std_msgs

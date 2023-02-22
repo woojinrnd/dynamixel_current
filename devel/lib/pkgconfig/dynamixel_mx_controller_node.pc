@@ -1,0 +1,8 @@
+prefix=/home/woojin/dynamixel_current/dynamixel_current/devel
+
+Name: dynamixel_mx_controller_node
+Description: Description of dynamixel_mx_controller_node
+Version: 0.0.0
+Cflags: -I/home/woojin/dynamixel_current/dynamixel_current/src/dynamixel_mx_controller/include
+Libs: -L${prefix}/lib -ldynamixel_mx_controller_node
+Requires: dynamixel_sdk roscpp std_msgs sensor_msgs

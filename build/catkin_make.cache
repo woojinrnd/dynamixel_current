@@ -1,0 +1,2 @@
+dynamixel_current
+-DCATKIN_DEVEL_PREFIX=/home/woojin/dynamixel_current/dynamixel_current/devel -DCMAKE_INSTALL_PREFIX=/home/woojin/dynamixel_current/dynamixel_current/install -G Unix Makefiles
