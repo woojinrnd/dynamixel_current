@@ -9,14 +9,14 @@ dynamixel::PacketHandler *packetHandler;
 
 void currentCallback(const std_msgs::Float64::ConstPtr &msg)
 {
-  current_value = msg->data;
+  goal_current_value = msg->data;
 }
 
 int main(int argc, char *argv[])
 {
   ros::init(argc, argv, "dynamixel_current_control");
   ros::NodeHandle n;
-  ros::Subscriber current_sub = n.subscribe("current_command", 10, currentCallback);
+  ros::Subscriber current_sub = n.subscribe("current_command", 1000, currentCallback);
 
   portHandler = dynamixel::PortHandler::getPortHandler("/dev/ttyACM0");
   packetHandler = dynamixel::PacketHandler::getPacketHandler(2.0);
@@ -52,10 +52,11 @@ int main(int argc, char *argv[])
   }
 
   ros::Rate loop_rate(1000);
+
   while (ros::ok())
   {
-    // Write the current value to the Dynamixel actuator
-    dxl_comm_result = packetHandler->write2ByteTxRx(portHandler, ID, 102, current_value, &dxl_error);
+    // Read the Pressent Current value from the Dynmaixel 
+    int dxl_comm_result = packetHandler->read2ByteTxRx(portHandler, ID, 126, (uint16_t*)&present_current_value, &dxl_error);
     if (dxl_comm_result != COMM_SUCCESS)
     {
       ROS_ERROR("%s", packetHandler->getTxRxResult(dxl_comm_result));
@@ -68,11 +69,31 @@ int main(int argc, char *argv[])
     }
     else
     {
-      ROS_INFO("Successfully wrote the current value to the Dynamixel actuator!");
+      // ROS_INFO("Successfully wrote the current value to the Dynamixel actuator!");
+      ROS_INFO("Present Current value : %d", present_current_value);
+    }
+
+    // Write the Goal Current value to the Dynamixel actuator
+    dxl_comm_result = packetHandler->write2ByteTxRx(portHandler, ID, 102, goal_current_value, &dxl_error);
+    if (dxl_comm_result != COMM_SUCCESS)
+    {
+      ROS_ERROR("%s", packetHandler->getTxRxResult(dxl_comm_result));
+      return 0;
+    }
+    else if (dxl_error != 0)
+    {
+      ROS_ERROR("%s", packetHandler->getRxPacketError(dxl_error));
+      return 0;
+    }
+    else
+    {
+      // ROS_INFO("Successfully wrote the current value to the Dynamixel actuator!");
+      // ROS_INFO("Goal Current value : %d",goal_current_value);
     }
 
     ros::spinOnce();
     loop_rate.sleep();
+    
   }
 
   return 0;
